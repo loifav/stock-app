@@ -1,48 +1,52 @@
 // pages/index.js
+"use client";
+
 import React from "react";
 import Transection from "./Transection";
 import Analityic from "./Analityic";
+import Ai from "@/components/ai/Ai";
 import { Container, Typography, Box } from "@mui/material";
 
 const HomePage = () => {
   return (
-    <Container maxWidth="xl" sx={{ py: 5 }}>
+    <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
       {/* Dashboard Heading */}
       <Typography
-        variant="h4"
+        variant="h2"
         sx={{
-          fontSize: { xs: "2rem", md: "3rem" },
-          color: "#0073e6",
-          fontWeight: 700,
+          fontSize: { xs: "2.5rem", md: "3.5rem" },
+          fontWeight: 800,
           textAlign: "center",
-          mb: 4,
-          textShadow: "1px 1px 3px rgba(0,0,0,0.1)",
-          borderBottom: "2px solid #0073e6",
-          display: "inline-block",
-          px: 2,
+          mb: { xs: 4, md: 6 },
+          background: "linear-gradient(90deg, #4facfe, #00f2fe)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
           letterSpacing: "1px",
+          textShadow: "0 2px 8px rgba(0,0,0,0.15)",
         }}
       >
-        Dashboard Cards
+        Dashboard Overview
       </Typography>
 
-      {/* AI Section Placeholder */}
+      {/* AI Section */}
       <Box
         sx={{
-          my: 4,
-          p: 3,
-          bgcolor: "#f5f5f5",
-          borderRadius: 2,
+          my: { xs: 3, md: 5 },
+          p: { xs: 2, md: 4 },
+          bgcolor: "#f0f4f8",
+          borderRadius: 3,
           textAlign: "center",
           color: "#555",
-          boxShadow: 1,
+          boxShadow: 2,
+          transition: "all 0.3s ease",
+          "&:hover": { boxShadow: 4 },
         }}
       >
-        Ai Component
+        <Ai />
       </Box>
 
       {/* Analytics Section */}
-      <Box sx={{ my: 4 }}>
+      <Box sx={{ my: { xs: 3, md: 5 } }}>
         <Analityic />
       </Box>
 
@@ -58,7 +62,7 @@ const HomePage = () => {
         Recent Transactions
       </Typography>
 
-      {/* Transaction Table/Section */}
+      {/* Transaction Table */}
       <Box sx={{ mb: 5 }}>
         <Transection />
       </Box>

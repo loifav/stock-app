@@ -2,6 +2,8 @@
 
 import React from "react";
 import {
+  Box,
+  Typography,
   Table,
   TableBody,
   TableCell,
@@ -9,14 +11,13 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Box,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { green, orange } from "@mui/material/colors";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useTheme } from "@mui/material/styles";
 
+// 🔹 Données d’exemple (identiques à Admin)
 const transactions = [
   {
     name: "Charles Casey",
@@ -50,7 +51,7 @@ const transactions = [
     position: "React Developer",
     status: "Active",
     age: 25,
-    startDate: "01 March, 2021",
+    startDate: "01 Mar, 2021",
     salary: "$23,700",
     statusColor: green[500],
   },
@@ -64,58 +65,46 @@ const LatestTransactions = () => {
     <TableContainer
       component={Paper}
       sx={{
-        overflowX: "auto",
         mb: 3,
         borderRadius: 2,
         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        overflowX: "auto",
       }}
     >
       <Table sx={{ minWidth: 250 }}>
         <TableHead>
           <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
             <TableCell>
-              <Typography variant="subtitle2" fontWeight={600} color="#333">
-                Name
-              </Typography>
+              <Typography fontWeight={600}>Name</Typography>
             </TableCell>
             {!isSmallScreen && (
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={600} color="#333">
-                  Position
-                </Typography>
+                <Typography fontWeight={600}>Position</Typography>
               </TableCell>
             )}
             <TableCell>
-              <Typography variant="subtitle2" fontWeight={600} color="#333">
-                Status
-              </Typography>
+              <Typography fontWeight={600}>Status</Typography>
             </TableCell>
             {!isSmallScreen && (
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={600} color="#333">
-                  Age
-                </Typography>
+                <Typography fontWeight={600}>Age</Typography>
               </TableCell>
             )}
             {!isSmallScreen && (
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={600} color="#333">
-                  Start Date
-                </Typography>
+                <Typography fontWeight={600}>Start Date</Typography>
               </TableCell>
             )}
             <TableCell>
-              <Typography variant="subtitle2" fontWeight={600} color="#333">
-                Salary
-              </Typography>
+              <Typography fontWeight={600}>Salary</Typography>
             </TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
-          {transactions.map((transaction, index) => (
+          {transactions.map((t, idx) => (
             <TableRow
-              key={index}
+              key={idx}
               sx={{
                 "&:hover": {
                   backgroundColor: theme.palette.action.hover,
@@ -125,49 +114,33 @@ const LatestTransactions = () => {
               }}
             >
               <TableCell>
-                <Typography variant="body2" color="#222">
-                  {transaction.name}
-                </Typography>
+                <Typography color="#222">{t.name}</Typography>
               </TableCell>
               {!isSmallScreen && (
                 <TableCell>
-                  <Typography variant="body2" color="#555">
-                    {transaction.position}
-                  </Typography>
+                  <Typography color="#555">{t.position}</Typography>
                 </TableCell>
               )}
               <TableCell>
                 <Box display="flex" alignItems="center">
                   <CircleIcon
-                    sx={{
-                      color: transaction.statusColor,
-                      mr: 1.2,
-                      fontSize: 12,
-                    }}
+                    sx={{ color: t.statusColor, mr: 1.2, fontSize: 12 }}
                   />
-                  <Typography variant="body2" color="#555">
-                    {transaction.status}
-                  </Typography>
+                  <Typography color="#555">{t.status}</Typography>
                 </Box>
               </TableCell>
               {!isSmallScreen && (
                 <TableCell>
-                  <Typography variant="body2" color="#555">
-                    {transaction.age}
-                  </Typography>
+                  <Typography color="#555">{t.age}</Typography>
                 </TableCell>
               )}
               {!isSmallScreen && (
                 <TableCell>
-                  <Typography variant="body2" color="#555">
-                    {transaction.startDate}
-                  </Typography>
+                  <Typography color="#555">{t.startDate}</Typography>
                 </TableCell>
               )}
               <TableCell>
-                <Typography variant="body2" color="#555">
-                  {transaction.salary}
-                </Typography>
+                <Typography color="#555">{t.salary}</Typography>
               </TableCell>
             </TableRow>
           ))}

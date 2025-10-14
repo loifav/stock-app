@@ -1,33 +1,41 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import Collapse from "@mui/material/Collapse";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {
+  Box,
+  Drawer as MuiDrawer,
+  AppBar as MuiAppBar,
+  Toolbar,
+  List,
+  CssBaseline,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Tooltip,
+} from "@mui/material";
+
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Inbox as InboxIcon,
+  Mail as MailIcon,
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+} from "@mui/icons-material";
+
 import { useRouter } from "next/navigation";
 import SnapPOS from "@/components/nav/SnapPos";
 
 const drawerWidth = 280;
 
+// Drawer ouvert
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -35,8 +43,10 @@ const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
+  backgroundColor: "#111",
 });
 
+// Drawer fermé
 const closedMixin = (theme) => ({
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
@@ -45,10 +55,12 @@ const closedMixin = (theme) => ({
   overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(15)} + 1px)`,
+    width: `calc(${theme.spacing(10)} + 1px)`,
   },
+  backgroundColor: "#111",
 });
 
+// Header du Drawer
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -57,6 +69,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
+// AppBar
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -65,7 +78,8 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  backgroundColor: "#222",
+  backgroundColor: "#151521",
+  color: "#fff",
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -76,6 +90,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+// Drawer stylé
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -83,57 +98,70 @@ const Drawer = styled(MuiDrawer, {
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  backgroundColor: "#1f1f1f",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
+  ...(open
+    ? { ...openedMixin(theme), "& .MuiDrawer-paper": openedMixin(theme) }
+    : { ...closedMixin(theme), "& .MuiDrawer-paper": closedMixin(theme) }),
 }));
 
-export default function Sidenav({ children }) {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
-  const [isCollapse, setIsCollapse] = React.useState(false);
-  const router = useRouter();
+// Style des boutons de la liste
+const listItemStyles = (open) => ({
+  minHeight: 48,
+  justifyContent: open ? "initial" : "center",
+  px: 2.5,
+  borderRadius: 2,
+  "&:hover": {
+    background: "linear-gradient(90deg, #4facfe, #00f2fe)",
+    color: "#fff",
+    "& .MuiListItemIcon-root": {
+      color: "#fff",
+    },
+  },
+  transition: "all 0.3s ease",
+  color: "#ccc",
+});
 
-  const handleDrawerOpen = () => setOpen(true);
-  const handleDrawerClose = () => setOpen(false);
-  const handleCollapse = () => setIsCollapse(!isCollapse);
+export default function UserSidenav({ children }) {
+  const theme = useTheme();
+  const router = useRouter();
+  const [open, setOpen] = useState(true);
+  const [transactionOpen, setTransactionOpen] = useState(false);
+  const [isCollapse, setIsCollapse] = useState(false);
+
+  const handleCollapse = () => {
+    setIsCollapse(!isCollapse);
+  };
+
+  const handleNavigation = (path) => {
+    router.push(`/dashboard/user/${path}`);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
-      <AppBar position="fixed" open={open} elevation={1}>
+      {/* AppBar */}
+      <AppBar position="fixed" open={open} elevation={2}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={() => setOpen(true)}
             edge="start"
-            sx={{ marginRight: 2, ...(open && { display: "none" }) }}
+            sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Dashboard
+            {"User Dashboard"}
           </Typography>
         </Toolbar>
       </AppBar>
 
+      {/* Drawer */}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <Typography
-            variant="h6"
-            sx={{ color: "#4facfe", fontWeight: 700, letterSpacing: 1 }}
-          >
-            <SnapPOS />
-          </Typography>
-          <IconButton onClick={handleDrawerClose} sx={{ color: "#fff" }}>
+          <SnapPOS />
+          <IconButton onClick={() => setOpen(!open)} sx={{ color: "#fff" }}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
@@ -142,93 +170,181 @@ export default function Sidenav({ children }) {
           </IconButton>
         </DrawerHeader>
 
-        <Divider sx={{ borderColor: "#444" }} />
+        <Divider sx={{ borderColor: "#333" }} />
 
+        {/* Dashboard */}
         <List>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => router.push(`/dashboard/user`)}
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-                "&:hover": { backgroundColor: "#9e9e9eff", borderRadius: 1 },
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
+          <Tooltip title={!open ? "Dashboard" : ""} placement="right" arrow>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => router.push("/dashboard/user")}
+                sx={listItemStyles(open)}
               >
-                <InboxIcon sx={{ color: "#4facfe" }} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Dashboard"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        </List>
-
-        <Divider sx={{ borderColor: "#444" }} />
-
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={handleCollapse}
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-                "&:hover": { backgroundColor: "#b8b7b7ff", borderRadius: 1 },
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
-              >
-                <MailIcon sx={{ color: "#4facfe" }} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Manage Category"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-              {isCollapse ? (
-                <ExpandLessIcon sx={{ color: "#fff" }} />
-              ) : (
-                <ExpandMoreIcon sx={{ color: "#fff" }} />
-              )}
-            </ListItemButton>
-          </ListItem>
-
-          <Collapse in={isCollapse} timeout="auto" unmountOnExit>
-            {["all-category"].map((text) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
+                <ListItemIcon
                   sx={{
-                    minHeight: 40,
-                    justifyContent: open ? "initial" : "center",
-                    px: open ? 4 : 2,
-                    "&:hover": { backgroundColor: "#2a2a2a", borderRadius: 1 },
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                    color: "#4facfe",
                   }}
                 >
-                  <ListItemText
-                    primary={text.replace(/-/g, " ")}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
+                  <InboxIcon />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText primary="Dashboard" sx={{ color: "#fff" }} />
+                )}
+              </ListItemButton>
+            </ListItem>
+          </Tooltip>
+        </List>
+
+        <Divider sx={{ borderColor: "#333" }} />
+
+        {/* Transactions section */}
+        <List>
+          <Tooltip title={!open ? "Transactions" : ""} placement="right" arrow>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => setTransactionOpen(!transactionOpen)}
+                sx={listItemStyles(open)}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                    color: "#4facfe",
+                  }}
+                >
+                  <MailIcon />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText primary="Transactions" sx={{ color: "#fff" }} />
+                )}
+                {open &&
+                  (transactionOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+              </ListItemButton>
+            </ListItem>
+          </Tooltip>
+
+          <Collapse in={transactionOpen} timeout="auto" unmountOnExit>
+            {["All Transactions", "Pending", "Completed"].map((text) => (
+              <Tooltip
+                key={text}
+                title={!open ? text : ""}
+                placement="right"
+                arrow
+              >
+                <ListItem disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 40,
+                      justifyContent: open ? "initial" : "center",
+                      px: open ? 4 : 2,
+                      "&:hover": {
+                        background: "#222",
+                        color: "#4facfe",
+                        borderRadius: 2,
+                      },
+                      transition: "all 0.3s ease",
+                      color: "#ccc",
+                    }}
+                    onClick={() =>
+                      router.push(
+                        `/dashboard/transactions/${text
+                          .toLowerCase()
+                          .replace(" ", "-")}`
+                      )
+                    }
+                  >
+                    {open && <ListItemText primary={text} />}
+                  </ListItemButton>
+                </ListItem>
+              </Tooltip>
             ))}
           </Collapse>
         </List>
+
+        {/* Manage Category */}
+        <List>
+          <Tooltip
+            title={!open ? "Manage Category" : ""}
+            placement="right"
+            arrow
+          >
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={handleCollapse}
+                sx={listItemStyles(open)}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                    color: "#4facfe",
+                  }}
+                >
+                  <MailIcon />
+                </ListItemIcon>
+                {open && (
+                  <>
+                    <ListItemText
+                      primary="Manage Category"
+                      sx={{ color: "#fff" }}
+                    />
+                    {isCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </>
+                )}
+              </ListItemButton>
+            </ListItem>
+          </Tooltip>
+
+          <Collapse in={isCollapse} timeout="auto" unmountOnExit>
+            {["all-category"].map((text) => (
+              <Tooltip
+                key={text}
+                title={!open ? text : ""}
+                placement="right"
+                arrow
+              >
+                <ListItem disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    onClick={() => handleNavigation(text)}
+                    sx={{
+                      minHeight: 40,
+                      justifyContent: open ? "initial" : "center",
+                      px: open ? 4 : 2,
+                      "&:hover": {
+                        background: "#222",
+                        color: "#4facfe",
+                        borderRadius: 2,
+                      },
+                      transition: "all 0.3s ease",
+                      color: "#ccc",
+                    }}
+                  >
+                    {open && <ListItemText primary={text} />}
+                  </ListItemButton>
+                </ListItem>
+              </Tooltip>
+            ))}
+          </Collapse>
+        </List>
+
+        <Divider sx={{ borderColor: "#333" }} />
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      {/* Contenu principal */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          backgroundColor: "#f4f5fa",
+          minHeight: "100vh",
+        }}
+      >
         <DrawerHeader />
         {children}
       </Box>
