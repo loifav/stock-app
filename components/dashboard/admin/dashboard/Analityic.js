@@ -3,7 +3,6 @@
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
@@ -77,10 +76,22 @@ const Home = () => {
         </motion.div>
       </Box>
 
-      {/* Cards Grid */}
-      <Grid container spacing={4} justifyContent="center">
+      {/* Cards Grid - replaced MUI Grid with responsive CSS grid via Box (works with MUI v6) */}
+      <Box
+        component="section"
+        sx={{
+          display: "grid",
+          gap: 4,
+          justifyContent: "center",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+          },
+        }}
+      >
         {pages.map((page, index) => (
-          <Grid item key={page.name} xs={12} sm={6} md={4}>
+          <Box key={page.name}>
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -118,9 +129,9 @@ const Home = () => {
                 </CardActionArea>
               </Card>
             </motion.div>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </Box>
   );
 };

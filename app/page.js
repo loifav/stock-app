@@ -7,7 +7,6 @@ import {
   Box,
   Typography,
   Button,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
@@ -146,74 +145,71 @@ const Home = () => {
           </Typography>
         </Box>
 
-        {/* Navigation Cards */}
-        <Grid
-          container
-          spacing={3}
-          justifyContent="center"
-          sx={{ maxWidth: "1000px", margin: "0 auto" }}
+        {/* Navigation Cards - replaced Grid (MUI v6) with responsive CSS grid via Box */}
+        <Box
+          sx={{
+            display: "grid",
+            gap: 3,
+            justifyItems: "center",
+            maxWidth: "1000px",
+            margin: "0 auto",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+            },
+          }}
         >
           {pages.map((page, index) => (
-            <Grid
+            <motion.div
               key={page.name}
-              item
-              xs={12}
-              sm={6}
-              md={4}
-              sx={{ display: "flex", justifyContent: "center" }}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: index * 0.1 }}
+              style={{ width: "100%", maxWidth: "300px" }}
             >
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: index * 0.1 }}
-                style={{ width: "100%", maxWidth: "300px" }}
+              <Card
+                sx={{
+                  width: "100%",
+                  height: 200,
+                  borderRadius: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "transform 0.3s, box-shadow 0.3s",
+                  boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
+                  "&:hover": {
+                    transform: "scale(1.03)",
+                    boxShadow: "0px 6px 20px rgba(0,0,0,0.1)",
+                  },
+                }}
+                onClick={() => router.push(page.path)}
               >
-                <Card
-                  sx={{
-                    width: "100%",
-                    height: 200,
-                    borderRadius: 3,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "transform 0.3s, box-shadow 0.3s",
-                    boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
-                    "&:hover": {
-                      transform: "scale(1.03)",
-                      boxShadow: "0px 6px 20px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                  onClick={() => router.push(page.path)}
-                >
-                  <CardActionArea>
-                    <CardContent
-                      sx={{
-                        textAlign: "center",
-                        py: 4,
-                      }}
+                <CardActionArea>
+                  <CardContent
+                    sx={{
+                      textAlign: "center",
+                      py: 4,
+                    }}
+                  >
+                    <Box sx={{ fontSize: 48, color: "#1976d2", mb: 1 }}>
+                      {page.icon}
+                    </Box>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 500, color: "#333" }}
                     >
-                      <Box sx={{ fontSize: 48, color: "#1976d2", mb: 1 }}>
-                        {page.icon}
-                      </Box>
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: 500, color: "#333" }}
-                      >
-                        {page.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "#666", mt: 0.5 }}
-                      >
-                        Go to {page.name}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </motion.div>
-            </Grid>
+                      {page.name}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666", mt: 0.5 }}>
+                      Go to {page.name}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </motion.div>
           ))}
-        </Grid>
+        </Box>
       </ContentBox>
     </BackgroundBox>
   );

@@ -1,8 +1,7 @@
-// pages/index.js
 "use client";
 
 import React from "react";
-import Transection from "./Transection";
+import Transection from "./Transaction";
 import Analityic from "./Analityic";
 import Ai from "@/components/ai/Ai";
 import { Container, Typography, Box } from "@mui/material";

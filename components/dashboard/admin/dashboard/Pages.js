@@ -1,6 +1,5 @@
-// pages/index.js
 import React from "react";
-import Transection from "./Transection";
+import Transaction from "./Transaction";
 import Analityic from "./Analityic";
 import { Container, Typography, Box } from "@mui/material";
 import Ai from "@/components/ai/Ai";
@@ -62,7 +61,7 @@ const HomePage = () => {
 
       {/* Transaction Table/Section */}
       <Box sx={{ mb: 5 }}>
-        <Transection />
+        <Transaction />
       </Box>
     </Container>
   );

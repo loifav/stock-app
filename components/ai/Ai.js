@@ -61,7 +61,7 @@ export default function AiPage() {
   return (
     <Box
       sx={{
-        minHeight: "auto", // shrink container to content
+        minHeight: "auto",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

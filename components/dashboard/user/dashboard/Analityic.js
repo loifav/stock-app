@@ -3,7 +3,6 @@
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
@@ -84,10 +83,23 @@ const Home = () => {
         </motion.div>
       </Box>
 
-      {/* Grid Section */}
-      <Grid container spacing={4} justifyContent="center">
+      {/* Grid Section - use CSS Grid to avoid Unstable_Grid2 import */}
+      <Box
+        component="section"
+        sx={{
+          display: "grid",
+          gap: 4, // theme spacing(4)
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(4, 1fr)",
+          },
+          alignItems: "start",
+        }}
+      >
         {pages.map((page, index) => (
-          <Grid item key={page.name} xs={12} sm={6} md={4} lg={3}>
+          <Box key={page.name}>
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -128,9 +140,9 @@ const Home = () => {
                 </CardActionArea>
               </Card>
             </motion.div>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </Box>
   );
 };
