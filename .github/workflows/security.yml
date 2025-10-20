@@ -38,7 +38,6 @@ jobs:
         uses: github/codeql-action/analyze@v3
 
   dependency-review:
-    # Run on manual dispatch or when a CI workflow_run finished successfully *and* it references a PR
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.pull_requests != null && github.event.workflow_run.pull_requests[0] != null) }}
     name: Dependency review (PR delta)
     runs-on: ubuntu-latest
@@ -50,7 +49,6 @@ jobs:
       - name: Dependency review
         uses: actions/dependency-review-action@v4
         with:
-          # Provide PR base/head refs when triggered via workflow_run
           base-ref: ${{ github.event.workflow_run.pull_requests[0].base.ref }}
           head-ref: ${{ github.event.workflow_run.pull_requests[0].head.ref }}
           fail-on-severity: high
@@ -59,7 +57,8 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     name: npm audit (fail on high)
     runs-on: ubuntu-latest
-    needs: dependency-review
+    # Run after CodeQL so it can execute even if dependency-review was skipped
+    needs: codeql
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +79,8 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     name: ESLint (static lint)
     runs-on: ubuntu-latest
-    needs: [codeql, npm-audit]
+    # Only require CodeQL to have completed; decoupled from npm-audit so lint runs even if audit is skipped/failed
+    needs: codeql
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -88,7 +88,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version:
+          node-version: 20.17.0
           cache: "npm"
 
       - name: Install dependencies
