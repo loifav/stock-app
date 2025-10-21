@@ -1,9 +1,11 @@
 "use client";
 
+import AllCategory from "@/components/allcategory/AllCategory";
+
 export default function Pos() {
   return (
     <>
-      <h1> all Category</h1>
+      <AllCategory />
     </>
   );
 }

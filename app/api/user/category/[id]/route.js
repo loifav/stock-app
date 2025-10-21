@@ -8,6 +8,7 @@ export async function PUT(req, context) {
   await dbConnect();
 
   const body = await req.json();
+  console.log("Updating category with data:", body);
   try {
     const { _id, ...updateBody } = body;
     const updatingCategory = await category.findByIdAndUpdate(
@@ -15,6 +16,7 @@ export async function PUT(req, context) {
       updateBody,
       { new: true }
     );
+    console.log("Updated category:", updatingCategory);
     return NextResponse.json(updatingCategory);
   } catch (error) {
     return NextResponse.json({ err: error.message }, { status: 500 });
@@ -28,6 +30,7 @@ export async function DELETE(req, context) {
     const deletingCategory = await category.findByIdAndDelete(
       context.params.id
     );
+    console.log("Deleting category:", deletingCategory);
     return NextResponse.json(deletingCategory);
   } catch (error) {
     return NextResponse.json({ err: error.message }, { status: 500 });

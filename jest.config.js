@@ -1,16 +1,13 @@
-import path from "path";
-import { fileURLToPath } from "url";
+const path = require("path");
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-export default {
+module.exports = {
   // default test environment (can be overridden per test file)
   testEnvironment: "jsdom",
 
   transform: {
     "^.+\\.[jt]sx?$": [
       "babel-jest",
-      { configFile: path.resolve(__dirname, "babel.jest.config.cjs") }, // point to CJS babel config
+      { configFile: path.resolve(__dirname, "babel.jest.config.cjs") },
     ],
     "^.+\\.mjs$": "babel-jest",
   },

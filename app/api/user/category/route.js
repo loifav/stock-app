@@ -22,8 +22,10 @@ export async function POST(req) {
 
   const { name } = body;
 
+  console.log("category name: ", name);
   try {
-    const newCategory = new Category({ name });
+    const newCategory = await Category.create({ name });
+    console.log("newCategory: ", newCategory);
     return NextResponse.json(newCategory);
   } catch (error) {
     return NextResponse.json({ err: error.message }, { status: 500 });
